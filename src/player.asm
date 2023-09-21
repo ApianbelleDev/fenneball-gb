@@ -35,14 +35,7 @@ initPlayer::
 	ld a, OAMF_YFLIP
 	ld [hli], a
 	ret ; return from function. NOTE: NOT RETURNING WILL HAVE RANDOM AND UNWANTED EFFECTS!!
-
-updatePlayer::
-	; constantly move paddle half upwards(for testing purposes)
-	;ld a, [_OAMRAM]
-	;inc a
-	;ld [_OAMRAM], a
-	ret
-
+	
 paddle:
 	incbin "res/paddle.2bpp"
 paddleEnd:

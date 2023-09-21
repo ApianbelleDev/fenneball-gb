@@ -13,5 +13,30 @@ waitVBlank2:
 	jp nz, waitVBlank2
 
 	; update objects
-	call updatePlayer
-	jp main	
+	call pollPad
+
+	checkUp:
+		ld a, [wCurBtn]
+		and a, PADF_UP
+		jp z, checkDown
+	padUp:
+		ld a, [_OAMRAM] ; top half of paddle (will make constant later)
+		dec a
+		ld [_OAMRAM], a
+
+		ld a, [_OAMRAM + 4] ; bottom half of paddle (will make constant later)
+		dec a
+		ld [_OAMRAM + 4], a
+	checkDown:
+		ld a, [wCurBtn]
+		and a, PADF_DOWN
+		jp z, main
+	padDown:
+		ld a, [_OAMRAM]
+		inc a
+		ld [_OAMRAM], a
+
+		ld a, [_OAMRAM + 4]
+		inc a
+		ld [_OAMRAM + 4], a 
+		jp main

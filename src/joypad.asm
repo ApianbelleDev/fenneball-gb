@@ -39,5 +39,5 @@ pollPad::
   ret
 
 SECTION "Input Variables", WRAM0
-wCurBtn: db
-wNewBtn: db
+wCurBtn:: db
+wNewBtn:: db
