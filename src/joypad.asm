@@ -2,7 +2,7 @@ INCLUDE "inc/hardware.inc"
 
 SECTION "Joypad", ROM0
 
-pollPad:
+pollPad::
   ; Poll half the controller
   ld a, P1F_GET_BTN
   call .onenibble

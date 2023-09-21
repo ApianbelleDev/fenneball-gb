@@ -19,27 +19,47 @@ waitVBlank:
 	ld a, 0
 	ld [rLCDC], a
 
-titleState:
-	ld a, [wGamestate]
-	cp a, STATE_TITLE
-	jp nz, gameplayState
-initTitle:
-	; init title screen here
-gameplayState:
-	ld a, [wGamestate]
-	cp a, STATE_GAME
-	jp z, main
-initGameplay:
-	; load background tiles
+	; load background tiles into vram
 	ld de, bg
 	ld hl, $9000
 	ld bc, bgEnd - bg
 	call memcpy
 
+	; load background tilemap into vram
+	ld de, bgTilemap
+	ld hl, $9800
+	ld bc, bgTilemapEnd - bgTilemap
+	call memcpy
+
+	
+	; clear OAM and prepare to draw objects
+	ld a, 0
+	ld b, 160
+	ld hl, _OAMRAM
+clearOam:
+	ld [hli], a
+	dec b 
+	jp nz, clearOam
+	
+	call initPlayer
+		
+	; turn on display and enable background, objects, and 8x16 mode after tiles and tilemap are loaded
+	ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ16
+	ld [rLCDC], a
+
+	; set default palettes.
+	ld a, %11100100
+	ld [rBGP], a
+	ld [rOBP0], a
+
+	jp main
 bg:
-; uh... it should be pretty obvious, but background tiles for the gameplay state should go here. :3
+incbin "res/bg.2bpp"
 bgEnd:
 
+bgTilemap:
+incbin "res/bg.tilemap"
+bgTilemapEnd:
 SECTION "Gamestate Variables", WRAM0
 wGamestate:: db
 

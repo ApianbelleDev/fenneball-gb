@@ -1,3 +1,17 @@
+INCLUDE "inc/defines.inc"
+INCLUDE "inc/hardware.inc"
+
 SECTION "code", ROM0
 main::
-	jp main ; infinitely jump to main so the code doesn't jump somewhere unexpected for now
+	; wait until it's *not* vblank
+	ld a, [rLY]
+	cp 144
+	jp nz, main
+waitVBlank2:
+	ld a, [rLY]
+	cp 144
+	jp nz, waitVBlank2
+
+	; update objects
+	call updatePlayer
+	jp main	
