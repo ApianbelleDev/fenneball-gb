@@ -38,7 +38,25 @@ initPlayer::
 	
 paddle:
 	incbin "res/paddle.2bpp"
+	;dw `33333333 
+	;dw `33333333 
+	;dw `33333333 
+	;dw `33333333 
+	;dw `33333333 
+	;dw `33333333 
+	;dw `33333333 
+	;dw `33333333 
+	;dw `33333333 
+	;dw `33333333 
+	;dw `33333333 
+	;dw `33333333 
+	;dw `33333333 
+	;dw `33333333 
+	;dw `33333333 
+	;dw `33333333 
+
+
 paddleEnd:
-SECTION "player variables", WRAM0
+section "player variables", WRAM0
 wPaddleY1:: db
 wPaddleY2:: db

@@ -1,24 +1,26 @@
-INCLUDE "inc/defines.inc"
-INCLUDE "inc/hardware.inc"
+include "inc/defines.inc"
+include "inc/hardware.inc"
 
-SECTION "header", ROM0[$100]
-	jp entryPoint
+section "header", rom0[$100]
 
+	jr entryPoint
+	
 	ds $150 - @, 0 ; make room for the header
 entryPoint:
-	; don't turn screen off outside of vblank!!!
-
-	ld a, 0
-	ld [rNR52], a ; disable audio until needed
-waitVBlank:
-	ld a, [rLY]
+	di ; disable interupts
+reset::
+	xor a
+	ldh [rNR52], a ; disable audio until needed
+.waitvblank
+	ldh a, [rLY]
 	cp 144
-	jp c, waitVBlank
+	jr c, .waitvblank
 
 	; turn the screen off
-	ld a, 0
-	ld [rLCDC], a
+	xor a
+	ldh [rLCDC], a
 
+	; goal: set up the bare minimum before we turn the screen back on
 	; load background tiles into vram
 	ld de, bg
 	ld hl, $9000
@@ -31,26 +33,24 @@ waitVBlank:
 	ld bc, bgTilemapEnd - bgTilemap
 	call memcpy
 
-	
 	; clear OAM and prepare to draw objects
 	ld a, 0
 	ld b, 160
 	ld hl, _OAMRAM
-clearOam:
+.clearoam
 	ld [hli], a
-	dec b 
-	jp nz, clearOam
-	
+	dec b
+	jr nz, .clearoam	
+
 	call initPlayer
-		
 	; turn on display and enable background, objects, and 8x16 mode after tiles and tilemap are loaded
 	ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ16
-	ld [rLCDC], a
+	ldh [rLCDC], a
 
 	; set default palettes.
-	ld a, %11100100
-	ld [rBGP], a
-	ld [rOBP0], a
+	ld a, %11_10_01_00
+	ldh [rBGP], a
+	ldh [rOBP0], a
 
 	jp main
 bg:
@@ -60,6 +60,5 @@ bgEnd:
 bgTilemap:
 incbin "res/bg.tilemap"
 bgTilemapEnd:
-SECTION "Gamestate Variables", WRAM0
+section "Gamestate Variables", wram0
 wGamestate:: db
-

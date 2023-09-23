@@ -11,5 +11,5 @@ memcpy::
     dec bc
     ld a, b
     or a, c
-    jp nz, memcpy
+    jr nz, memcpy
     ret

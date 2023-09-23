@@ -1,16 +1,16 @@
-INCLUDE "inc/defines.inc"
-INCLUDE "inc/hardware.inc"
+include "inc/defines.inc"
+include "inc/hardware.inc"
 
-SECTION "code", ROM0
+section "code", rom0
 main::
 	; wait until it's *not* vblank
-	ld a, [rLY]
+	ldh a, [rLY]
 	cp 144
-	jp nz, main
-waitVBlank2:
-	ld a, [rLY]
+	jr nz, main
+.waitvblank
+	ldh a, [rLY]
 	cp 144
-	jp nz, waitVBlank2
+	jr nz, .waitvblank
 
 	; update objects
 	call pollPad
@@ -18,7 +18,7 @@ waitVBlank2:
 	checkUp:
 		ld a, [wCurBtn]
 		and a, PADF_UP
-		jp z, checkDown
+		jr z, checkDown
 	padUp:
 		ld a, [_OAMRAM] ; top half of paddle (will make constant later)
 		dec a
@@ -30,7 +30,7 @@ waitVBlank2:
 	checkDown:
 		ld a, [wCurBtn]
 		and a, PADF_DOWN
-		jp z, main
+		jr z, main
 	padDown:
 		ld a, [_OAMRAM]
 		inc a
@@ -39,4 +39,4 @@ waitVBlank2:
 		ld a, [_OAMRAM + 4]
 		inc a
 		ld [_OAMRAM + 4], a 
-		jp main
+		jr main
