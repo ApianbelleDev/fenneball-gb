@@ -43,6 +43,7 @@ reset::
 	jr nz, .clearoam	
 
 	call initPlayer
+	call initBall
 	; turn on display and enable background, objects, and 8x16 mode after tiles and tilemap are loaded
 	ld a, LCDCF_ON | LCDCF_BGON | LCDCF_OBJON | LCDCF_OBJ16
 	ldh [rLCDC], a

@@ -2,6 +2,10 @@ INCLUDE "inc/hardware.inc"
 
 SECTION "Joypad", ROM0
 
+	; initialize wram variables to 0
+	ld a, 0
+	ld [wCurBtn], a
+	ld [wNewBtn], a
 pollPad::
   ; Poll half the controller
   ld a, P1F_GET_BTN
@@ -20,6 +24,8 @@ pollPad::
   ldh [rP1], a
 
   ; Combine with previous wCurKeys to make wNewKeys
+  ld a, 0
+  ld [wCurBtn], a
   ld a, [wCurBtn]
   xor a, b ; A = keys that changed state
   and a, b ; A = keys that changed to pressed

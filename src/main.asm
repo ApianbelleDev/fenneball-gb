@@ -14,7 +14,7 @@ main::
 
 	; update objects
 	call pollPad
-
+	call updateBall
 	checkUp:
 		ld a, [wCurBtn]
 		and a, PADF_UP
@@ -40,3 +40,5 @@ main::
 		inc a
 		ld [_OAMRAM + 4], a 
 		jr main
+
+	
